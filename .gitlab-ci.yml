@@ -1,0 +1,5 @@
+include:
+  local: templates/python/Python.gitlab-ci.yml
+
+stages:
+  - build
