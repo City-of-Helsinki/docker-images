@@ -27,4 +27,4 @@ WORKDIR /home/appuser
 ENV PIP_USER 1
 
 # Add by pip installed binaries to path
-ENV PATH="/home/worker/.local/bin:${PATH}"
+ENV PATH="/home/appuser/.local/bin:${PATH}"
