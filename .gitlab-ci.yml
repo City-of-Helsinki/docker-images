@@ -1,5 +1,15 @@
 include:
   local: templates/python/Python.gitlab-ci.yml
 
+variables:
+  # Docker by default users `vfs` which is not suitable for
+  # production use. overlay2 is the preferred driver by Docker.
+  DOCKER_DRIVER: overlay2
+
+  # If the host is not set docker cli will try to use a 172.x.x.x
+  # IP when connecting to the Docker API, which will not work
+  DOCKER_HOST: "tcp://localhost:2375"
+
+
 stages:
   - build
