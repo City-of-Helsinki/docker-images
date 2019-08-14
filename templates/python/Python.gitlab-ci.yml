@@ -9,12 +9,8 @@
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - base_image="$TEMPLATE:$VERSION-$VARIANT"
     - image="$CI_REGISTRY_IMAGE/$base_image"
-    - git clone https://github.com/docker-library/official-images.git /tmp/official-images
     - cd "templates/$TEMPLATE"
     - docker build --build-arg BUILD_FROM="$base_image" --pull -t "$image" .
-    - chmod +x /tmp/official-images/test/run.sh
-    - apk update && apk add bash
-    - bash /tmp/official-images/test/run.sh "$image"
     - docker push "$image"
   only:
     - master
