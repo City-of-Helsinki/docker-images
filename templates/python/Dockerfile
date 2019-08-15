@@ -27,6 +27,17 @@ RUN groupadd --gid 1000 appuser \
 USER appuser
 WORKDIR /home/appuser
 
+# Setup up SSH keys and add popular source control sites
+ARG SSH_PRIVATE_KEY
+ARG SSH_PUBLIC_KEY
+RUN mkdir /home/appuser/.ssh \
+  && echo "$SSH_PRIVATE_KEY" > /home/appuser/.ssh/id_rsa && \
+  && echo "$SSH_PUBLIC_KEY" > /home/appuser/.ssh/id_rsa.pub && \
+  && ssh-keyscan github.com >> /home/appuser/.ssh/known_hosts \
+  && ssh-keyscan bitbucket.org >> /home/appuser/.ssh/known_hosts \
+  && ssh-keyscan gitlab.org >> /home/appuser/.ssh/known_hosts \
+  && ssh-keyscan git.anders.fi >> /home/appuser/.ssh/known_hosts
+
 # Install pip packages as the current user (same as `pip --user`)
 ENV PIP_USER 1
 
