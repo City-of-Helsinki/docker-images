@@ -12,6 +12,9 @@ variables:
   # IP when connecting to the Docker API, which will not work
   DOCKER_HOST: "tcp://localhost:2375"
 
+  # TODO: Fix me
+  DOCKER_TLS_CERTDIR: ""
+
   # Use BuildKit when creating docker images
   DOCKER_BUILDKIT: 1
 
