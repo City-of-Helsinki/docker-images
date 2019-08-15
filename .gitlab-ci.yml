@@ -15,9 +15,6 @@ variables:
   # TODO: Fix me
   DOCKER_TLS_CERTDIR: ""
 
-  # Use BuildKit when creating docker images
-  DOCKER_BUILDKIT: 1
-
 
 stages:
   - build
