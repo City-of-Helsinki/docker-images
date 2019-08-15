@@ -1,0 +1,61 @@
+.build-python-node:
+  stage: secondary_build
+  image: docker:stable-git
+  services:
+    - docker:stable-dind
+  variables:
+    TEMPLATE: "python"
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - base_image="docker.anders.fi/anders/docker-images/python:$PYTHON_VERSION-$VARIANT"
+    - image="$CI_REGISTRY_IMAGE/$TEMPLATE:$PYTHON_VERSION-$NODE_VERSION-$VARIANT"
+    - cd "templates/$TEMPLATE"
+    - docker build --build-arg BUILD_FROM="$base_image" NODE_VERSION="$NODE_VERSION --pull -t "$image" .
+    - docker push "$image"
+  only:
+    - master
+  except:
+    variables:
+      - $PYTHON_DISABLED
+
+build-python-3.6-node-8:
+  variables:
+    PYTHON_VERSION: "3.6"
+    NODE_VERSION: "8"
+    VARIANT: "slim"
+  extends: .build-python-node
+
+build-python-3.6-node-10:
+  variables:
+    PYTHON_VERSION: "3.6"
+    NODE_VERSION: "10"
+    VARIANT: "slim"
+  extends: .build-python-node
+
+build-python-3.6-node-12:
+  variables:
+    PYTHON_VERSION: "3.6"
+    NODE_VERSION: "12"
+    VARIANT: "slim"
+  extends: .build-python-node
+
+build-python-3.7-node-8:
+  variables:
+    PYTHON_VERSION: "3.7"
+    NODE_VERSION: "8"
+    VARIANT: "slim"
+  extends: .build-python-node
+
+build-python-3.7-node-10:
+  variables:
+    PYTHON_VERSION: "3.7"
+    NODE_VERSION: "10"
+    VARIANT: "slim"
+  extends: .build-python-node
+
+build-python-3.7-node-12:
+  variables:
+    PYTHON_VERSION: "3.7"
+    NODE_VERSION: "12"
+    VARIANT: "slim"
+  extends: .build-python-node

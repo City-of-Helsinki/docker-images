@@ -1,6 +1,7 @@
 include:
   - local: templates/python/Python.gitlab-ci.yml
   - local: templates/node/Node.gitlab-ci.yml
+  - local: templates/python-node/PythonNode.gitlab-ci.yml
 
 variables:
   # Docker by default users `vfs` which is not suitable for
@@ -14,3 +15,4 @@ variables:
 
 stages:
   - build
+  - secondary_build
