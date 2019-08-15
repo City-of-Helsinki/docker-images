@@ -1,30 +1,29 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
- build-essential \
- xmlsec1 \
- libxmlsec1 \
- libxml2-dev \
- libxslt1-dev \
- zlib1g-dev \
- libssl-dev \
- libffi-dev \
- libpq-dev \
+# Make bash the only shell
+# The reason for this is that commands are still run
+# with sh even if shell is set for the user.
+# TODO: Find a way to not have to remove /bin/sh
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+# Add convenience scripts
+RUN mkdir /tools
+COPY /tools/apt-install.sh /tools/apt-install.sh
+COPY /tools/apt-cleanup.sh /tools/apt-cleanup.sh
+
+# Install convenience packages
+RUN /tools/apt-install.sh \
  git \
- gettext \
  openssh-client \
  curl \
- && pip install -U pip \
- && pip install -U --no-cache-dir pip psycopg2 \
- && apt-get remove -y build-essential \
- && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
- && rm -rf /var/lib/apt/lists/* \
- && rm -rf /var/cache/apt/archives
-
+ && /tools/apt-cleanup.sh
 
 # Add an application user
-RUN useradd --create-home --shell /bin/bash appuser
+RUN groupadd --gid 1000 appuser \
+  && useradd --uid 1000 --gid appuser --create-home --shell /bin/bash appuser
+
+# Run as `appuser` for all new commands
 USER appuser
 WORKDIR /home/appuser
 
