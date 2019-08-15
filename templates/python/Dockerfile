@@ -31,8 +31,8 @@ WORKDIR /home/appuser
 ARG SSH_PRIVATE_KEY
 ARG SSH_PUBLIC_KEY
 RUN mkdir /home/appuser/.ssh \
-  && echo "$SSH_PRIVATE_KEY" > /home/appuser/.ssh/id_rsa && \
-  && echo "$SSH_PUBLIC_KEY" > /home/appuser/.ssh/id_rsa.pub && \
+  && echo "$SSH_PRIVATE_KEY" > /home/appuser/.ssh/id_rsa \
+  && echo "$SSH_PUBLIC_KEY" > /home/appuser/.ssh/id_rsa.pub \
   && ssh-keyscan github.com >> /home/appuser/.ssh/known_hosts \
   && ssh-keyscan bitbucket.org >> /home/appuser/.ssh/known_hosts \
   && ssh-keyscan gitlab.org >> /home/appuser/.ssh/known_hosts \
