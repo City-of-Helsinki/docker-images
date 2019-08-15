@@ -1,0 +1,38 @@
+.build-node:
+  stage: build
+  image: docker:stable-git
+  services:
+    - docker:stable-dind
+  variables:
+    TEMPLATE: "node"
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - base_image="$TEMPLATE:$VERSION-$VARIANT"
+    - image="$CI_REGISTRY_IMAGE/$base_image"
+    - cd "templates/$TEMPLATE"
+    - cp -r ../scripts scripts
+    - docker build --build-arg BUILD_FROM="$base_image" --build-arg SSH_PRIVATE_KEY="$SSH_PRIVATE_KEY" --build-arg SSH_PUBLIC_KEY="$SSH_PUBLIC_KEY" --pull -t "$image" .
+    - docker push "$image"
+  only:
+    - master
+  except:
+    variables:
+      - $NODE_DISABLED
+
+build-node-8:
+  variables:
+    VERSION: "8"
+    VARIANT: "slim"
+  extends: .build-node
+
+build-node-10:
+  variables:
+    VERSION: "10"
+    VARIANT: "slim"
+  extends: .build-node
+
+build-node-12:
+  variables:
+    VERSION: "12"
+    VARIANT: "slim"
+  extends: .build-node
