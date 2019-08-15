@@ -10,6 +10,7 @@
     - base_image="docker.anders.fi/anders/docker-images/python:$PYTHON_VERSION-$VARIANT"
     - image="$CI_REGISTRY_IMAGE/$TEMPLATE:$PYTHON_VERSION-$NODE_VERSION-$VARIANT"
     - cd "templates/$TEMPLATE"
+    - sleep 5
     - docker build --build-arg BUILD_FROM="$base_image" NODE_VERSION="$NODE_VERSION -t "$image" .
     - docker push "$image"
   only:
