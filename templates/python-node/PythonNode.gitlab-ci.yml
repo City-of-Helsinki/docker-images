@@ -1,6 +1,6 @@
 .build-python-node:
   stage: secondary_build
-  image: docker:stable-git
+  image: docker:stable
   services:
     - docker:stable-dind
   variables:

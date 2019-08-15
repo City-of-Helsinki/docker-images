@@ -1,6 +1,6 @@
 .build-python:
   stage: build
-  image: docker:stable-git
+  image: docker:stable
   services:
     - docker:stable-dind
   variables:
