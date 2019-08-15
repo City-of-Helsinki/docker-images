@@ -12,7 +12,6 @@
     - cd "templates/$TEMPLATE"
     - cp -r ../scripts scripts
     - cp -r ../tools tools
-    - docker pull $image > /dev/null
     - docker build --build-arg BUILD_FROM="$base_image" --build-arg SSH_PRIVATE_KEY="$SSH_PRIVATE_KEY" --build-arg SSH_PUBLIC_KEY="$SSH_PUBLIC_KEY" -t "$image" .
     - docker push "$image"
   only:
