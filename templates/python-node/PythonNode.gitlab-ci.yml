@@ -8,7 +8,7 @@
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - base_image="docker.anders.fi/anders/docker-images/python:$PYTHON_VERSION-$VARIANT"
-    - image="$CI_REGISTRY_IMAGE/$TEMPLATE:$PYTHON_VERSION-$NODE_VERSION-$VARIANT"
+    - image="$CI_REGISTRY_IMAGE/$TEMPLATE:$PYTHON_VERSION-${NODE_VERSION%%.*}-$VARIANT"
     - cd "templates/$TEMPLATE"
     - docker build --build-arg BUILD_FROM="$base_image" --build-arg NODE_VERSION="$NODE_VERSION" -t "$image" .
     - docker push "$image"
