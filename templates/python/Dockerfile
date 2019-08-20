@@ -1,6 +1,8 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
+ENV PYTHONUNBUFFERED 1
+
 # Add convenience scripts
 COPY tools /tools
 COPY scripts /scripts
