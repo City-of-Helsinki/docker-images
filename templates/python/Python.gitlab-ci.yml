@@ -21,6 +21,12 @@
     variables:
       - $PYTHON_DISABLED
 
+build-python-2.7:
+  variables:
+    VERSION: "2.7"
+    VARIANT: "slim"
+  extends: .build-python
+
 build-python-3.6:
   variables:
     VERSION: "3.6"
