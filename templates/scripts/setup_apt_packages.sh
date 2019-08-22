@@ -6,5 +6,6 @@ apt-get upgrade -y
 /tools/apt-install.sh \
  git \
  openssh-client \
- curl
+ curl \
+ wget
 /tools/apt-cleanup.sh
