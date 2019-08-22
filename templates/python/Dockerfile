@@ -16,7 +16,7 @@ RUN /scripts/base_setup.sh
 
 # Run as `appuser` for all new commands
 USER appuser
-WORKDIR /home/appuser
+WORKDIR /app
 
 # Install pip packages as the current user (same as `pip --user`)
 ENV PIP_USER 1
