@@ -35,7 +35,7 @@ build-python-3.6-node-10:
 build-python-3.6-node-12:
   variables:
     PYTHON_VERSION: "3.6"
-    NODE_VERSION: "12.8.1"
+    NODE_VERSION: "12.10.0"
     VARIANT: "slim"
   extends: .build-python-node
 
@@ -56,6 +56,6 @@ build-python-3.7-node-10:
 build-python-3.7-node-12:
   variables:
     PYTHON_VERSION: "3.7"
-    NODE_VERSION: "12.8.1"
+    NODE_VERSION: "12.10.0"
     VARIANT: "slim"
   extends: .build-python-node
