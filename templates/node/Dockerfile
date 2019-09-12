@@ -10,6 +10,4 @@ ARG SSH_PRIVATE_KEY
 ARG SSH_PUBLIC_KEY
 RUN /scripts/base_setup.sh
 
-# Run as `appuser` for all new commands
-USER appuser
 WORKDIR /app
