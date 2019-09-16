@@ -6,8 +6,6 @@ COPY tools /tools
 COPY scripts /scripts
 
 # Make bash the only shell
-ARG SSH_PRIVATE_KEY
-ARG SSH_PUBLIC_KEY
 RUN /scripts/base_setup.sh
 
 WORKDIR /app
