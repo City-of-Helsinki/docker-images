@@ -24,6 +24,7 @@ build-python-3.6-node-8:
     NODE_VERSION: "8.16.1"
     VARIANT: "slim"
   extends: .build-python-node
+  needs: ["build-python-3.6"]
 
 build-python-3.6-node-10:
   variables:
@@ -31,6 +32,7 @@ build-python-3.6-node-10:
     NODE_VERSION: "10.16.3"
     VARIANT: "slim"
   extends: .build-python-node
+  needs: ["build-python-3.6"]
 
 build-python-3.6-node-12:
   variables:
@@ -38,6 +40,7 @@ build-python-3.6-node-12:
     NODE_VERSION: "12.10.0"
     VARIANT: "slim"
   extends: .build-python-node
+  needs: ["build-python-3.6"]
 
 build-python-3.7-node-8:
   variables:
@@ -45,6 +48,7 @@ build-python-3.7-node-8:
     NODE_VERSION: "8.16.1"
     VARIANT: "slim"
   extends: .build-python-node
+  needs: ["build-python-3.7"]
 
 build-python-3.7-node-10:
   variables:
@@ -52,6 +56,7 @@ build-python-3.7-node-10:
     NODE_VERSION: "10.16.3"
     VARIANT: "slim"
   extends: .build-python-node
+  needs: ["build-python-3.7"]
 
 build-python-3.7-node-12:
   variables:
@@ -59,3 +64,4 @@ build-python-3.7-node-12:
     NODE_VERSION: "12.10.0"
     VARIANT: "slim"
   extends: .build-python-node
+  needs: ["build-python-3.7"]
