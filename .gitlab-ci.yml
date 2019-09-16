@@ -13,6 +13,7 @@ variables:
   DOCKER_HOST: "tcp://localhost:2375"
 
   # TODO: Fix me
+  # Ref: https://about.gitlab.com/2019/07/31/docker-in-docker-with-docker-19-dot-03/
   DOCKER_TLS_CERTDIR: ""
 
   # Use BuildKit when creating docker images
