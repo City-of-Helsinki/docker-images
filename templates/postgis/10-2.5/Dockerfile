@@ -1,8 +1,7 @@
 FROM postgres:10-alpine
-MAINTAINER Régis Belson <me@regisbelson.fr>
 
-ENV POSTGIS_VERSION 2.5.2
-ENV POSTGIS_SHA256 225aeaece00a1a6a9af15526af81bef2af27f4c198de820af1367a792ee1d1a9
+ENV POSTGIS_VERSION 2.5.3
+ENV POSTGIS_SHA256 402323c83d97f3859bc9083345dd687f933c261efe0830e1262c20c12671f794
 
 RUN set -ex \
     \
@@ -36,7 +35,7 @@ RUN set -ex \
         --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
         gdal-dev \
         geos-dev \
-        proj4-dev \
+        proj-dev \
         protobuf-c-dev \
     && cd /usr/src/postgis \
     && ./autogen.sh \
@@ -53,7 +52,7 @@ RUN set -ex \
         --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \        
         geos \
         gdal \
-        proj4 \
+        proj \
         protobuf-c \
     && cd / \
     && rm -rf /usr/src/postgis \
