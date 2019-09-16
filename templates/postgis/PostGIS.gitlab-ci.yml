@@ -7,7 +7,8 @@
     TEMPLATE: "postgis"
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-    - image="$CI_REGISTRY_IMAGE:$VERSION-$VARIANT"
+    - base_image="$TEMPLATE:$VERSION-$VARIANT"
+    - image="$CI_REGISTRY_IMAGE/$base_image"
     - git clone https://github.com/docker-library/official-images.git /tmp/official-images
     - cd "templates/$TEMPLATE/$VERSION"
     - docker build --pull -t "$image" .
