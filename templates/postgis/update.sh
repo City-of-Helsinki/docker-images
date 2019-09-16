@@ -25,7 +25,11 @@ for version in "${versions[@]}"; do
 	srcSha256="$(curl -sSL "https://github.com/postgis/postgis/archive/$srcVersion.tar.gz" | sha256sum | awk '{ print $1 }')"
 
     set -x
-    cp Dockerfile.alpine.template initdb-postgis.sh update-postgis.sh "$version/$variant/"
-    mv "$version/$variant/Dockerfile.alpine.template" "$version/$variant/Dockerfile"
-    sed -i 's/%%PG_MAJOR%%/'"$pg_major"'/g; s/%%POSTGIS_VERSION%%/'"$srcVersion"'/g; s/%%POSTGIS_SHA256%%/'"$srcSha256"'/g' "$version/$variant/Dockerfile"
+    cp Dockerfile.alpine.template initdb-postgis.sh update-postgis.sh "$version/"
+    mv "$version/$variant/Dockerfile.alpine.template" "$version/Dockerfile"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' -e 's/%%PG_MAJOR%%/'"$pg_major"'/g; s/%%POSTGIS_VERSION%%/'"$srcVersion"'/g; s/%%POSTGIS_SHA256%%/'"$srcSha256"'/g' "$version/Dockerfile"
+    else
+        sed -i's/%%PG_MAJOR%%/'"$pg_major"'/g; s/%%POSTGIS_VERSION%%/'"$srcVersion"'/g; s/%%POSTGIS_SHA256%%/'"$srcSha256"'/g' "$version/Dockerfile"
+    fi
 done
