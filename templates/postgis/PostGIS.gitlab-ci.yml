@@ -1,33 +1,35 @@
-.build:
+.build-postgis:
   stage: build
   image: docker:stable-git
   services:
     - docker:stable-dind
+  variables:
+    TEMPLATE: "postgis"
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - image="$CI_REGISTRY_IMAGE:$VERSION-$VARIANT"
     - git clone https://github.com/docker-library/official-images.git /tmp/official-images
-    - cd "$VERSION"
+    - cd "templates/$TEMPLATE/$VERSION"
     - docker build --pull -t "$image" .
     - chmod +x /tmp/official-images/test/run.sh
     - apk update && apk add bash
     - bash /tmp/official-images/test/run.sh -c /tmp/official-images/test/config.sh -c "../test/postgis-config.sh" "$image"
     - docker push "$image"
 
-build-9.6-2.5-alpine:
+build-postgis-9.6-2.5-alpine:
   variables:
     VERSION: 9.6-2.5
     VARIANT: alpine
-  extends: .build
+  extends: .build-postgis
 
-build-10-2.5-alpine:
+build-postgis-10-2.5-alpine:
   variables:
     VERSION: 10-2.5
     VARIANT: alpine
-  extends: .build
+  extends: .build-postgis
 
-build-11-2.5-alpine:
+build-postgis-11-2.5-alpine:
   variables:
     VERSION: 11-2.5
     VARIANT: alpine
-  extends: .build
+  extends: .build-postgis
