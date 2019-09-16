@@ -9,10 +9,6 @@ variables:
   # production use. overlay2 is the preferred driver by Docker.
   DOCKER_DRIVER: overlay2
 
-  # If the host is not set docker cli will try to use a 172.x.x.x
-  # IP when connecting to the Docker API, which will not work
-  DOCKER_HOST: "tcp://localhost:2375"
-
   # TODO: Fix me
   # Ref: https://about.gitlab.com/2019/07/31/docker-in-docker-with-docker-19-dot-03/
   DOCKER_TLS_CERTDIR: ""
@@ -24,3 +20,7 @@ variables:
 stages:
   - build
   - secondary_build
+
+before_script:
+  - source setup.sh
+  - set_docker_host
