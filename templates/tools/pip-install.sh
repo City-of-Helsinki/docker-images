@@ -43,6 +43,3 @@ else
     echo "Running without user"
     bash -c "${path_command} pip install --no-cache-dir ${c}"
 fi
-
-
-
