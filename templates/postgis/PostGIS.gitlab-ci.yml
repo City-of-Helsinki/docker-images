@@ -16,6 +16,9 @@
     - apk update && apk add bash
     - bash /tmp/official-images/test/run.sh -c /tmp/official-images/test/config.sh -c "../test/postgis-config.sh" "$image"
     - docker push "$image"
+  only:
+    - merge_requests
+    - master
   except:
     variables:
       - $POSTGIS_DISABLED

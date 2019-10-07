@@ -13,6 +13,7 @@
     - docker build --build-arg BUILD_FROM="$base_image" --build-arg NODE_VERSION="$NODE_VERSION" -t "$image" .
     - docker push "$image"
   only:
+    - merge_requests
     - master
   except:
     variables:
