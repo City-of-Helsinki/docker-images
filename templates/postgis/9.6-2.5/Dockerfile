@@ -41,7 +41,7 @@ RUN set -ex \
     && ./autogen.sh \
 # configure options taken from:
 # https://anonscm.debian.org/cgit/pkg-grass/postgis.git/tree/debian/rules?h=jessie
-    && ./configure \
+    && ./configure --without-protobuf \
 #       --with-gui \
     && make \
     && make install \
