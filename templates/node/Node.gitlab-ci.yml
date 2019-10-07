@@ -8,7 +8,7 @@
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - base_image="$TEMPLATE:$VERSION-$VARIANT"
-    - image="$CI_REGISTRY_IMAGE/$base_image"
+    - image=$(create_image_tag "$CI_REGISTRY_IMAGE/$base_image")
     - cd "templates/$TEMPLATE"
     - cp -r ../scripts scripts
     - cp -r ../tools tools
