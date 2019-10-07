@@ -5,7 +5,7 @@ function usage {
     echo "Usage: $0 [-p <path>] [-u <user>] -a <command>"
     echo "  -a      argument for 'pip install'"
     echo "  -p      path to run in"
-    echo "  -u      user to run as (forces pip --user flag)"1>&2
+    echo "  -u      user to run as (forces pip --user flag)"
     exit 1;
 }
 
