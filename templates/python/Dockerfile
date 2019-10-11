@@ -12,6 +12,12 @@ ENV PATH="/scripts:${PATH}"
 # Make bash the only shell
 RUN /scripts/base_setup.sh
 
+RUN apt-install.sh \
+  libpcre3 \
+  libpcre3-dev \
+  mime-support \
+&& apt-cleanup.sh
+
 WORKDIR /app
 
 # Add appuser binaries to path
