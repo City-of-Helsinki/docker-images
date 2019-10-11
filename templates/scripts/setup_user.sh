@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 # Add an application user
-groupadd appuser
-useradd --gid appuser --create-home --shell /bin/bash appuser
+groupadd --gid 1000 appuser
+useradd --uid 1000 --gid appuser --create-home --shell /bin/bash appuser
