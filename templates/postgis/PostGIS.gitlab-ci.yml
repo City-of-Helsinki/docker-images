@@ -8,7 +8,7 @@
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - base_image="$TEMPLATE:$VERSION-$VARIANT"
-    - image="$CI_REGISTRY_IMAGE/$base_image"
+    - image=$(create_image_tag "$CI_REGISTRY_IMAGE/$base_image")
     - git clone https://github.com/docker-library/official-images.git /tmp/official-images
     - cd "templates/$TEMPLATE/$VERSION"
     - docker build --pull -t "$image" .
@@ -16,6 +16,12 @@
     - apk update && apk add bash
     - bash /tmp/official-images/test/run.sh -c /tmp/official-images/test/config.sh -c "../test/postgis-config.sh" "$image"
     - docker push "$image"
+  only:
+    - merge_requests
+    - master
+  except:
+    variables:
+      - $POSTGIS_DISABLED
 
 build-postgis-9.6-2.5-alpine:
   variables:

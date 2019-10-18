@@ -23,4 +23,5 @@ stages:
 
 before_script:
   - source setup.sh
+  - source helpers.sh
   - set_docker_host
