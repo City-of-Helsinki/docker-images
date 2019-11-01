@@ -66,3 +66,19 @@ build-python-3.7-node-12:
     VARIANT: "slim"
   extends: .build-python-node
   needs: ["build-python-3.7"]
+
+build-python-3.8-node-10:
+  variables:
+    PYTHON_VERSION: "3.8"
+    NODE_VERSION: "10.17.0"
+    VARIANT: "slim"
+  extends: .build-python-node
+  needs: ["build-python-3.8"]
+
+build-python-3.8-node-12:
+  variables:
+    PYTHON_VERSION: "3.8"
+    NODE_VERSION: "12.13.0"
+    VARIANT: "slim"
+  extends: .build-python-node
+  needs: ["build-python-3.8"]
