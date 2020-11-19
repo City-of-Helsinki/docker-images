@@ -1,0 +1,162 @@
+name: Test base image build
+
+on: [pull_request]
+
+env:
+  CI_REGISTRY_IMAGE_PREFIX: helsinkitest/
+
+jobs:
+  test_image_build:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { template: postgis/9.6-2.5, version: 9.6-2.5, variant: alpine }
+          - { template: postgis/10-2.5, version: 10-2.5, variant: alpine }
+          - { template: postgis/11-2.5, version: 11-2.5, variant: alpine }
+          - { template: node, version: 10, variant: slim }
+          - { template: node, version: 12, variant: slim }
+          - { template: node, version: 14, variant: slim }
+          - { template: python, version: 2.7, variant: slim }
+          - { template: python, version: 3.6, variant: slim }
+          - { template: python, version: 3.7, variant: slim }
+          - { template: python, version: 3.8, variant: slim }
+          
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: src/github.com/${{ github.repository }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Copy scripts
+      if: ${{ !contains( matrix.config.template, '/')}}
+      run: |
+        cp -r ../scripts scripts
+        cp -r ../tools tools
+        echo "IMAGE_NAME=${{ env.CI_REGISTRY_IMAGE_PREFIX }}${{ matrix.config.template }}" >> $GITHUB_ENV
+        echo "IMAGE_VERSION=${{ matrix.config.version }}-${{ matrix.config.variant }}-${{ github.sha }}" >> $GITHUB_ENV
+      working-directory: src/github.com/${{ github.repository }}/templates/${{ matrix.config.template }}
+
+    - name: Set postgis image information
+      if: ${{ contains( matrix.config.template, '/')}}
+      run: |
+        template=${{ matrix.config.template }}; echo "IMAGE_NAME=${{ env.CI_REGISTRY_IMAGE_PREFIX }}${template%/*}" >> $GITHUB_ENV
+        echo "IMAGE_VERSION=${{ matrix.config.version }}-${{ matrix.config.variant }}-${{ github.sha }}" >> $GITHUB_ENV
+
+    - name: Test build
+      uses: docker/build-push-action@v2
+      with:
+        context: src/github.com/${{ github.repository }}/templates/${{ matrix.config.template }}
+        file: src/github.com/${{ github.repository }}/templates/${{ matrix.config.template }}/Dockerfile
+        load: true
+        tags: ${{ env.IMAGE_NAME}}:${{ env.IMAGE_VERSION}}
+        build-args: |
+            BUILD_FROM=${{ matrix.config.template }}:${{ matrix.config.version }}-${{ matrix.config.variant }}
+
+    - name: Export python images
+      if: matrix.config.template == 'python'
+      run: |
+        docker image save --output ${{ matrix.config.template }}_${{ env.IMAGE_VERSION}}.tar ${{ env.IMAGE_NAME}}:${{ env.IMAGE_VERSION}}
+    
+    - name: Store python image as artifact
+      if: matrix.config.template == 'python'
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.config.template }}_${{ env.IMAGE_VERSION}}
+        path: ${{ matrix.config.template }}_${{ env.IMAGE_VERSION}}.tar
+        retention-days: 1
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: '${{ env.IMAGE_NAME}}:${{ env.IMAGE_VERSION}}'
+        format: 'template'
+        template: '@/contrib/sarif.tpl'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  test_python_node_image_build:
+    needs: test_image_build
+    strategy:
+      fail-fast: false
+      matrix:
+        python_version: [ '3.6', '3.7', '3.8' ]
+        node_version: [ '10', '12', '14']
+        variant: ['slim']
+        template: ['python-node']
+
+    runs-on: ubuntu-latest
+
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: src/github.com/${{ github.repository }}
+
+    - name: Download Python images
+      uses: actions/download-artifact@v2
+      with:
+        name: python_${{ matrix.python_version }}-${{ matrix.variant }}-${{ github.sha }}
+    
+    - name: Set variables
+      run: |
+        echo "SOURCE_PYTHON_IMAGE_NAME=${{ env.CI_REGISTRY_IMAGE_PREFIX }}python:${{ matrix.python_version }}-${{ matrix.variant }}-${{ github.sha }}" >> $GITHUB_ENV
+        echo "PYTHON_IMAGE_NAME=localhost:5000/python:${{ matrix.python_version }}-${{ matrix.variant }}-${{ github.sha }}" >> $GITHUB_ENV
+
+    - name: Load test Python image to Docker
+      run: |
+        docker image load -i python_${{ matrix.python_version }}-${{ matrix.variant }}-${{ github.sha }}.tar
+        docker image tag ${{ env.SOURCE_PYTHON_IMAGE_NAME }} ${{ env.PYTHON_IMAGE_NAME }}
+        docker image push ${{ env.PYTHON_IMAGE_NAME }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+      with:
+        driver-opts: network=host
+
+    - name: Copy scripts
+      run: |
+        cp -r ../scripts scripts
+        cp -r ../tools tools
+        echo "IMAGE_NAME=${{ env.CI_REGISTRY_IMAGE_PREFIX }}${{ matrix.template }}" >> $GITHUB_ENV
+        node_version=${{ matrix.node_version }}; echo "IMAGE_VERSION=${{ matrix.python_version }}-${node_version%%.*}-${{ matrix.variant }}-${{ github.sha }}" >> $GITHUB_ENV
+      working-directory: src/github.com/${{ github.repository }}/templates/${{ matrix.template }}
+      
+    - name: Test build
+      uses: docker/build-push-action@v2
+      with:
+        context: src/github.com/${{ github.repository }}/templates/${{ matrix.template }}
+        file: src/github.com/${{ github.repository }}/templates/${{ matrix.template }}/Dockerfile
+        push: false
+        load: true
+        tags: ${{ env.IMAGE_NAME }}:${{env.IMAGE_VERSION}}
+        build-args: |
+            BUILD_FROM=${{ env.PYTHON_IMAGE_NAME }}
+            NODE_VERSION=${{ matrix.node_version }}
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: '${{ env.IMAGE_NAME }}:${{env.IMAGE_VERSION}}'
+        format: 'template'
+        template: '@/contrib/sarif.tpl'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: 'trivy-results.sarif'
