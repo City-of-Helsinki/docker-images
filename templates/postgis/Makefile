@@ -11,6 +11,6 @@ endef
 $(foreach version,$(VERSIONS),$(eval $(call postgis-version,$(version))))
 
 update:
-	docker run -it -v $$(pwd):/work -w /work buildpack-deps ./update.sh
+	docker run -it --rm -v $$(pwd):/work -w /work buildpack-deps ./update.sh
 
 .PHONY: all build update $(VERSIONS)
