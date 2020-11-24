@@ -13,11 +13,12 @@ for version in "${versions[@]}"; do
 	IFS=- read pg_major postgis_major <<< "$version"
 	echo $postgis_major
 	echo $pg_major
-    git ls-remote --tags https://github.com/postgis/postgis.git "refs/tags/$postgis_major.*"
-    test="$(git ls-remote --tags https://github.com/postgis/postgis.git 'refs/tags/$postgis_major.*')"
+    # Remove dereferences from the output (no parameter to get those out at ls-remote)
+    git ls-remote --tags https://github.com/postgis/postgis.git 'refs/tags/$postgis_major.*' | grep -v '\^{}'
+    test="$(git ls-remote --tags https://github.com/postgis/postgis.git 'refs/tags/$postgis_major.*' | grep -v '\^{}')"
     echo $test
 
-    fullVersion="$(git ls-remote --tags https://github.com/postgis/postgis.git "refs/tags/$postgis_major.*" | tail -n1 | sed 's%.*refs/tags/%%')"
+    fullVersion="$(git ls-remote --tags https://github.com/postgis/postgis.git "refs/tags/$postgis_major.*" | grep -v '\^{}' | tail -n1 | sed 's%.*refs/tags/%%')"
 
 	[ -z "$fullVersion" ] && { echo >&2 "Unable to find package for PostGIS $postgis_major on Postgres $pg_major"; exit 1; }
 
@@ -30,6 +31,6 @@ for version in "${versions[@]}"; do
     if [[ "$OSTYPE" == "darwin"* ]]; then
         sed -i '' -e 's/%%PG_MAJOR%%/'"$pg_major"'/g; s/%%POSTGIS_VERSION%%/'"$srcVersion"'/g; s/%%POSTGIS_SHA256%%/'"$srcSha256"'/g' "$version/Dockerfile"
     else
-        sed -i's/%%PG_MAJOR%%/'"$pg_major"'/g; s/%%POSTGIS_VERSION%%/'"$srcVersion"'/g; s/%%POSTGIS_SHA256%%/'"$srcSha256"'/g' "$version/Dockerfile"
+        sed -i 's/%%PG_MAJOR%%/'"$pg_major"'/g; s/%%POSTGIS_VERSION%%/'"$srcVersion"'/g; s/%%POSTGIS_SHA256%%/'"$srcSha256"'/g' "$version/Dockerfile"
     fi
 done

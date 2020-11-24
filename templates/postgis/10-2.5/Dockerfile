@@ -1,9 +1,11 @@
 FROM postgres:10-alpine
 
-ENV POSTGIS_VERSION 2.5.3
-ENV POSTGIS_SHA256 402323c83d97f3859bc9083345dd687f933c261efe0830e1262c20c12671f794
+ENV POSTGIS_VERSION 2.5.5
+ENV POSTGIS_SHA256 24b15ee36f3af02015da0e92a18f9046ea0b4fd24896196c8e6c2aa8e4b56baa
 
 RUN set -ex \
+    \
+    && apk upgrade --no-cache \
     \
     && apk add --no-cache --virtual .fetch-deps \
         ca-certificates \
@@ -23,40 +25,38 @@ RUN set -ex \
     && apk add --no-cache --virtual .build-deps \
         autoconf \
         automake \
-        g++ \
+        file \
         json-c-dev \
         libtool \
         libxml2-dev \
         make \
         perl \
-    \
-    && apk add --no-cache --virtual .build-deps-edge \
-        --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \    
-        --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+        clang-dev \
+        g++ \
+        gcc \
         gdal-dev \
         geos-dev \
+        llvm10-dev \
         proj-dev \
         protobuf-c-dev \
     && cd /usr/src/postgis \
     && ./autogen.sh \
 # configure options taken from:
 # https://anonscm.debian.org/cgit/pkg-grass/postgis.git/tree/debian/rules?h=jessie
-    && ./configure --without-protobuf \
+    && ./configure \
 #       --with-gui \
     && make \
     && make install \
     && apk add --no-cache --virtual .postgis-rundeps \
         json-c \
-    && apk add --no-cache --virtual .postgis-rundeps-edge \
-        --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \    
-        --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \        
         geos \
         gdal \
         proj \
+        libstdc++ \
         protobuf-c \
     && cd / \
     && rm -rf /usr/src/postgis \
-    && apk del .fetch-deps .build-deps .build-deps-edge
+    && apk del .fetch-deps .build-deps
 
 COPY ./initdb-postgis.sh /docker-entrypoint-initdb.d/postgis.sh
 COPY ./update-postgis.sh /usr/local/bin
