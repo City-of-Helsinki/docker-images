@@ -22,7 +22,7 @@ jobs:
           - { template: python, version: 3.6, variant: slim }
           - { template: python, version: 3.7, variant: slim }
           - { template: python, version: 3.8, variant: slim }
-          
+          - { template: python, version: 3.9, variant: slim }
     runs-on: ubuntu-latest
 
     steps:
@@ -89,7 +89,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python_version: [ '3.6', '3.7', '3.8' ]
+        python_version: [ '3.6', '3.7', '3.8', '3.9' ]
         node_version: [ '10', '12', '14']
         variant: ['slim']
         template: ['python-node']
