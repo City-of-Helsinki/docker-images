@@ -49,7 +49,7 @@ jobs:
         echo "IMAGE_VERSION=${{ matrix.config.version }}-${{ matrix.config.variant }}-${{ github.sha }}" >> $GITHUB_ENV
 
     - name: Test build
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v2.4.0
       with:
         context: src/github.com/${{ github.repository }}/templates/${{ matrix.config.template }}
         file: src/github.com/${{ github.repository }}/templates/${{ matrix.config.template }}/Dockerfile
@@ -137,7 +137,7 @@ jobs:
       working-directory: src/github.com/${{ github.repository }}/templates/${{ matrix.template }}
       
     - name: Test build
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v2.4.0
       with:
         context: src/github.com/${{ github.repository }}/templates/${{ matrix.template }}
         file: src/github.com/${{ github.repository }}/templates/${{ matrix.template }}/Dockerfile
