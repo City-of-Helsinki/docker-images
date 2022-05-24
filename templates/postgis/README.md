@@ -1,5 +1,6 @@
 # PostGIS Docker images
 
+PostGIS Docker files base on [`docker-postgis`](https://github.com/postgis/docker-postgis)
 
 The images provides a Docker container running Postgres with [PostGIS 2.5](http://postgis.net/) installed. This image is based on the official [`postgres`](https://registry.hub.docker.com/_/postgres/) image and provides variants for each version of Postgres 9 supported by the base image (9.4-9.6), Postgres 10, and Postgres 11.
 
