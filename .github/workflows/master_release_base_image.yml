@@ -23,6 +23,7 @@ jobs:
           - { template: node, version: 10, variant: slim }
           - { template: node, version: 12, variant: slim }
           - { template: node, version: 14, variant: slim }
+          - { template: node, version: 16, variant: slim }
           - { template: python, version: 2.7, variant: slim }
           - { template: python, version: 3.6, variant: slim }
           - { template: python, version: 3.7, variant: slim }
@@ -89,7 +90,7 @@ jobs:
       fail-fast: false
       matrix:
         python_version: [ '3.6', '3.7', '3.8', '3.9' ]
-        node_version: [ '10', '12', '14']
+        node_version: [ '10', '12', '14', '16']
         variant: ['slim']
         template: ['python-node']
 
