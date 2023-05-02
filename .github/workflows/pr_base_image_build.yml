@@ -15,12 +15,9 @@ jobs:
           - { template: postgis/9.6-2.5, version: 9.6-2.5, variant: alpine }
           - { template: postgis/10-2.5, version: 10-2.5, variant: alpine }
           - { template: postgis/11-2.5, version: 11-2.5, variant: alpine }
-          - { template: node, version: 10, variant: slim }
-          - { template: node, version: 12, variant: slim }
           - { template: node, version: 14, variant: slim }
           - { template: node, version: 16, variant: slim }
-          - { template: python, version: 2.7, variant: slim }
-          - { template: python, version: 3.6, variant: slim }
+          - { template: node, version: 18, variant: slim }
           - { template: python, version: 3.7, variant: slim }
           - { template: python, version: 3.8, variant: slim }
           - { template: python, version: 3.9, variant: slim }
@@ -90,8 +87,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python_version: [ '3.6', '3.7', '3.8', '3.9' ]
-        node_version: [ '10', '12', '14', '16']
+        python_version: [ '3.7', '3.8', '3.9' ]
+        node_version: [ '14', '16', '18']
         variant: ['slim']
         template: ['python-node']
 
